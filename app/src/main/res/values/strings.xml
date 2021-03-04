@@ -1,3 +1,29 @@
 <resources>
+    <string-array name="courses">
+        <item>all courses</item>
+        <item>1 course</item>
+        <item>2 course</item>
+        <item>3 course</item>
+        <item>4 course</item>
+        <item>5 course</item>
+        <item>6 course</item>
+    </string-array>
+
+    <string-array name="institutes">
+        <item>all institutes</item>
+        <item>1 institute</item>
+        <item>2 institute</item>
+        <item>3 institute</item>
+        <item>4 institute</item>
+        <item>5 institute</item>
+        <item>6 institute</item>
+        <item>7 institute</item>
+        <item>8 institute</item>
+        <item>9 institute</item>
+        <item>10 institute</item>
+        <item>11 institute</item>
+        <item>12 institute</item>
+    </string-array>
+
     <string name="app_name">ScheduleMAI</string>
 </resources>
