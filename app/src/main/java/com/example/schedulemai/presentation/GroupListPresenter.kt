@@ -1,6 +1,9 @@
 package com.example.schedulemai.presentation
 
+import android.content.Context
+import android.net.Network
 import com.example.schedulemai.models.Course
+import com.github.pwittchen.reactivenetwork.library.rx2.ReactiveNetwork
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -13,8 +16,8 @@ import java.io.IOException
  * Created by Andrey Morgunov on 04/03/2021.
  */
 
-class GroupListPresentation(private val view: GroupListContract.View) :
-    GroupListContract.Presentation {
+class GroupListPresenter(private val view: GroupListContract.View) :
+    GroupListContract.Presenter {
 
     private val compositeDisposable = CompositeDisposable()
 

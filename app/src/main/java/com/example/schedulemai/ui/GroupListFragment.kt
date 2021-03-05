@@ -13,14 +13,14 @@ import com.example.schedulemai.databinding.FragmentGroupListBinding
 import com.example.schedulemai.models.Course
 import com.example.schedulemai.presentation.GroupListAdapter
 import com.example.schedulemai.presentation.GroupListContract
-import com.example.schedulemai.presentation.GroupListPresentation
+import com.example.schedulemai.presentation.GroupListPresenter
 import com.google.android.material.snackbar.Snackbar
 
 
 class GroupListFragment : Fragment(R.layout.fragment_group_list), GroupListContract.View {
 
     private val binding: FragmentGroupListBinding by viewBinding()
-    private lateinit var groupListPresentation: GroupListPresentation
+    private lateinit var groupListPresenter: GroupListPresenter
     private var courseList: List<Course> = listOf()
 
     override fun onCreateView(
@@ -31,25 +31,27 @@ class GroupListFragment : Fragment(R.layout.fragment_group_list), GroupListContr
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        groupListPresentation = GroupListPresentation(this)
-        val courseAdapter: ArrayAdapter<*> = ArrayAdapter.createFromResource(
+        super.onViewCreated(view, savedInstanceState)
+        groupListPresenter = GroupListPresenter(this)
+        ArrayAdapter.createFromResource(
             requireContext(),
             R.array.courses,
             R.layout.spinner_item
-        )
-        courseAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item)
-        val instituteAdapter: ArrayAdapter<*> = ArrayAdapter.createFromResource(
+        ).also { adapter ->
+            adapter.setDropDownViewResource(R.layout.spinner_dropdown_item)
+            binding.courseSpinner.adapter = adapter
+        }
+        ArrayAdapter.createFromResource(
             requireContext(),
             R.array.institutes,
             R.layout.spinner_item
-        )
-        instituteAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item)
-
+        ).also { adapter ->
+            adapter.setDropDownViewResource(R.layout.spinner_dropdown_item)
+            binding.instituteSpinner.adapter = adapter
+        }
         with(binding) {
-            courseSpinner.adapter = courseAdapter
-            instituteSpinner.adapter = instituteAdapter
             groupListRecyclerView.layoutManager = LinearLayoutManager(activity)
-            groupListRecyclerView.visibility = View.GONE
+            groupListRecyclerView.visibility = View.INVISIBLE
             progressBar.visibility = View.VISIBLE
             findGroupsButton.setOnClickListener {
                 filterGroupsByParameters(
@@ -58,7 +60,7 @@ class GroupListFragment : Fragment(R.layout.fragment_group_list), GroupListContr
                 )
             }
         }
-        groupListPresentation.getGroups()
+        groupListPresenter.getGroups()
     }
 
     private fun filterGroupsByParameters(course: Int, institute: Int) {
@@ -77,12 +79,16 @@ class GroupListFragment : Fragment(R.layout.fragment_group_list), GroupListContr
 
     override fun onError(e: Throwable) {
         binding.progressBar.visibility = View.GONE
-        Snackbar.make(requireView(), e.toString(), Snackbar.LENGTH_LONG).show()
+        Snackbar.make(
+            requireView(),
+            e.message.toString(),
+            Snackbar.LENGTH_LONG
+        ).show()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        groupListPresentation.onDestroy()
+        groupListPresenter.onDestroy()
     }
 
     override fun onSuccess(list: List<Course>) {
@@ -91,4 +97,5 @@ class GroupListFragment : Fragment(R.layout.fragment_group_list), GroupListContr
         courseList = list
         binding.groupListRecyclerView.adapter = GroupListAdapter(list)
     }
+
 }

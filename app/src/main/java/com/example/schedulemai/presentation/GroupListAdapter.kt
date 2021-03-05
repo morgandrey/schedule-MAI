@@ -1,9 +1,11 @@
 package com.example.schedulemai.presentation
 
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.core.os.bundleOf
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.schedulemai.R
@@ -27,7 +29,9 @@ class GroupListAdapter(private val dataSet: List<Course>) :
             instituteTextView.text = item.institute.toString()
             groupTextView.text = item.group
             itemView.setOnClickListener {
-                it.findNavController().navigate(R.id.action_groupListFragment_to_lessonListFragment)
+                val groupBundle = bundleOf("group" to item.group)
+                it.findNavController()
+                    .navigate(R.id.action_groupListFragment_to_lessonListFragment, groupBundle)
             }
         }
 

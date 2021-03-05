@@ -1,21 +1,20 @@
 package com.example.schedulemai.presentation
 
-import com.example.schedulemai.models.Course
+import com.example.schedulemai.models.Lesson
 
 
 /**
  * Created by Andrey Morgunov on 04/03/2021.
  */
 
-interface GroupListContract
-{
+class LessonListContract {
     interface View {
         fun onError(e: Throwable)
-        fun onSuccess(list: List<Course>)
+        fun onSuccess(list: List<Lesson>)
     }
 
     interface Presenter {
-        fun getGroups()
+        fun getGroupLessons(group: String)
         fun onDestroy()
     }
 }
