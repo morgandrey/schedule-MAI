@@ -16,27 +16,27 @@ interface SharedPreferencesService {
 }
 
 class SharedPreferencesServiceImpl(context: Context): SharedPreferencesService {
-    private val MY_APP_PREFERENCES = "GROUP"
-    private val PREF_USER_LEARNED_DRAWER = "Group"
+    private val APP_PREFERENCES = "GROUP"
+    private val GROUP_PREF = "Group"
 
     private var sharedPrefs: SharedPreferences? = null
 
     init {
         sharedPrefs = context.applicationContext
-            .getSharedPreferences(MY_APP_PREFERENCES, Context.MODE_PRIVATE)
+            .getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE)
     }
 
     override fun getGroup(): String? {
-        return sharedPrefs!!.getString(PREF_USER_LEARNED_DRAWER, null)
+        return sharedPrefs!!.getString(GROUP_PREF, null)
     }
 
     override fun deleteGroup() {
-        sharedPrefs!!.edit().remove(PREF_USER_LEARNED_DRAWER).apply()
+        sharedPrefs!!.edit().remove(GROUP_PREF).apply()
     }
 
     override fun setGroup(value: String) {
         sharedPrefs!!.edit().also {
-            it.putString(PREF_USER_LEARNED_DRAWER, value)
+            it.putString(GROUP_PREF, value)
             it.apply()
         }
     }

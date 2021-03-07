@@ -41,7 +41,6 @@ class LessonListFragment : Fragment(R.layout.fragment_lesson_list), LessonListCo
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         (requireActivity() as AppCompatActivity).supportActionBar!!.setDisplayHomeAsUpEnabled(false)
         sharedPreferencesServiceImpl =
             SharedPreferencesServiceImpl(requireActivity().applicationContext)
@@ -50,7 +49,7 @@ class LessonListFragment : Fragment(R.layout.fragment_lesson_list), LessonListCo
         with(binding) {
             groupTitle.text = group
             lessonsProgressBar.visibility = View.VISIBLE
-            lessonRecyclerView.visibility = View.INVISIBLE
+            lessonRecyclerView.visibility = View.GONE
             changeGroupTextView.setOnClickListener {
                 sharedPreferencesServiceImpl.deleteGroup()
                 view.findNavController()
@@ -97,9 +96,7 @@ class LessonListFragment : Fragment(R.layout.fragment_lesson_list), LessonListCo
             ) { dialog, _ ->
                 val week = (dialog as AlertDialog).listView.checkedItemPosition + 1
                 binding.weekTextView.text = dialog.listView.getItemAtPosition(week - 1).toString()
-                GlobalScope.launch {
-                    lessonListPresenter.getGroupLessons(group, week)
-                }
+                GlobalScope.launch { lessonListPresenter.getGroupLessons(group, week) }
             }
             .setNegativeButton(
                 R.string.dialog_cancel

@@ -42,50 +42,49 @@ class GroupListFragment : Fragment(R.layout.fragment_group_list), GroupListContr
         sharedPreferencesServiceImpl = SharedPreferencesServiceImpl(requireActivity().applicationContext)
         if (sharedPreferencesServiceImpl.getGroup() != null) {
             view.findNavController().navigate(R.id.action_groupListFragment_to_lessonListFragment)
-        }
-        groupListPresenter = GroupListPresenter(this)
-        ArrayAdapter.createFromResource(
-            requireContext(),
-            R.array.courses,
-            R.layout.spinner_item
-        ).also { adapter ->
-            adapter.setDropDownViewResource(R.layout.spinner_dropdown_item)
-            binding.courseSpinner.adapter = adapter
-        }
-        ArrayAdapter.createFromResource(
-            requireContext(),
-            R.array.institutes,
-            R.layout.spinner_item
-        ).also { adapter ->
-            adapter.setDropDownViewResource(R.layout.spinner_dropdown_item)
-            binding.instituteSpinner.adapter = adapter
-        }
-        with(binding) {
-            groupListRecyclerView.layoutManager = LinearLayoutManager(activity)
-            groupListRecyclerView.visibility = View.GONE
-            groupListProgressBar.visibility = View.VISIBLE
-            findGroupsButton.setOnClickListener {
-                filterGroupsByParameters(
-                    courseSpinner.selectedItemPosition,
-                    instituteSpinner.selectedItemPosition
-                )
+        } else {
+            groupListPresenter = GroupListPresenter(this)
+            ArrayAdapter.createFromResource(
+                requireContext(),
+                R.array.courses,
+                R.layout.spinner_item
+            ).also { adapter ->
+                adapter.setDropDownViewResource(R.layout.spinner_dropdown_item)
+                binding.courseSpinner.adapter = adapter
             }
-        }
-
-        activity?.onBackPressedDispatcher?.addCallback(
-            viewLifecycleOwner,
-            object : OnBackPressedCallback(
-                true
-            ) {
-                override fun handleOnBackPressed() {
-                    val intent = Intent(Intent.ACTION_MAIN)
-                    intent.addCategory(Intent.CATEGORY_HOME)
-                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                    startActivity(intent)
+            ArrayAdapter.createFromResource(
+                requireContext(),
+                R.array.institutes,
+                R.layout.spinner_item
+            ).also { adapter ->
+                adapter.setDropDownViewResource(R.layout.spinner_dropdown_item)
+                binding.instituteSpinner.adapter = adapter
+            }
+            with(binding) {
+                groupListRecyclerView.layoutManager = LinearLayoutManager(activity)
+                groupListRecyclerView.visibility = View.GONE
+                groupListProgressBar.visibility = View.VISIBLE
+                findGroupsButton.setOnClickListener {
+                    filterGroupsByParameters(
+                        courseSpinner.selectedItemPosition,
+                        instituteSpinner.selectedItemPosition
+                    )
                 }
-            })
-
-        groupListPresenter.getGroups()
+            }
+            activity?.onBackPressedDispatcher?.addCallback(
+                viewLifecycleOwner,
+                object : OnBackPressedCallback(
+                    true
+                ) {
+                    override fun handleOnBackPressed() {
+                        val intent = Intent(Intent.ACTION_MAIN)
+                        intent.addCategory(Intent.CATEGORY_HOME)
+                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                        startActivity(intent)
+                    }
+                })
+            groupListPresenter.getGroups()
+        }
     }
 
     private fun filterGroupsByParameters(course: Int, institute: Int) {
