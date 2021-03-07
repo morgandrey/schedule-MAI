@@ -7,14 +7,16 @@ import com.example.schedulemai.models.Lesson
  * Created by Andrey Morgunov on 04/03/2021.
  */
 
-class LessonListContract {
+interface LessonListContract {
     interface View {
         fun onError(e: Throwable)
-        fun onSuccess(list: List<Lesson>)
+        fun onSuccessGetWeeks(weeks: Map<Int, String>)
+        fun onSuccessGetGroups(list: List<Lesson>)
     }
 
     interface Presenter {
-        fun getGroupLessons(group: String)
+        fun getGroupLessons(group: String, week: Int?)
+        fun getWeeks(group: String)
         fun onDestroy()
     }
 }

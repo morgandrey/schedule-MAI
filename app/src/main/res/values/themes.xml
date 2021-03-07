@@ -14,7 +14,7 @@
         <!-- Customize your theme here. -->
     </style>
 
-    <style name="Theme.ScheduleMAI2" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="Theme.ScheduleMAI2" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">#FF5722</item>
         <item name="colorPrimaryDark">#000000</item>
         <item name="colorAccent">#FF5722</item>

@@ -7,8 +7,8 @@
     <fragment
         android:id="@+id/groupListFragment"
         android:name="com.example.schedulemai.ui.GroupListFragment"
-        android:label="fragment_group_list"
-        tools:layout="@layout/fragment_group_list" >
+        android:label="MAI schedule"
+        tools:layout="@layout/fragment_group_list">
         <action
             android:id="@+id/action_groupListFragment_to_lessonListFragment"
             app:destination="@id/lessonListFragment"
@@ -20,6 +20,14 @@
     <fragment
         android:id="@+id/lessonListFragment"
         android:name="com.example.schedulemai.ui.LessonListFragment"
-        android:label="fragment_lesson_list"
-        tools:layout="@layout/fragment_lesson_list" />
+        android:label="Lessons"
+        tools:layout="@layout/fragment_lesson_list" >
+        <action
+            android:id="@+id/action_lessonListFragment_to_groupListFragment"
+            app:destination="@id/groupListFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
 </navigation>

@@ -26,4 +26,8 @@
     </string-array>
 
     <string name="app_name">ScheduleMAI</string>
+    <string name="week_dialog_title">Choose week</string>
+    <string name="dialog_ok">OK</string>
+    <string name="dialog_cancel">Cancel</string>
+    <string name="present_day">Present day</string>
 </resources>

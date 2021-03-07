@@ -10,7 +10,8 @@
         android:id="@+id/group_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="8dp"
+        android:textAlignment="center"
         android:textColor="@color/black"
         android:textSize="18sp"
         android:textStyle="bold|italic"
@@ -19,6 +20,50 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:text="М3О-435Б-17" />
 
+    <TextView
+        android:id="@+id/week_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/present_day"
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="@+id/group_title"
+        app:layout_constraintStart_toStartOf="@+id/group_title"
+        app:layout_constraintTop_toBottomOf="@+id/group_title" />
+
+    <TextView
+        android:id="@+id/change_week_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Choose week"
+        android:textAlignment="center"
+        android:textColor="@color/purple_700"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="@+id/change_group_text_view"
+        app:layout_constraintEnd_toStartOf="@+id/change_group_text_view"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/change_group_text_view" />
+
+    <TextView
+        android:id="@+id/change_group_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:text="Change group"
+        android:textAlignment="center"
+        android:textColor="@color/purple_700"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toTopOf="@+id/lesson_recycler_view"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/change_week_text_view"
+        app:layout_constraintStart_toStartOf="@+id/group_title"
+        app:layout_constraintTop_toBottomOf="@+id/week_text_view" />
+
     <View
         android:id="@+id/view"
         android:layout_width="0dp"
@@ -26,17 +71,17 @@
         android:background="@color/black"
         app:layout_constraintBottom_toTopOf="@+id/lesson_recycler_view"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/lesson_recycler_view" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/lesson_recycler_view"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/group_title"
+        app:layout_constraintTop_toBottomOf="@+id/change_group_text_view"
         tools:listitem="@layout/lesson_item_view" />
 
     <ProgressBar
@@ -45,7 +90,7 @@
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:indeterminate="true"
-        android:visibility="gone"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
