@@ -1,9 +1,6 @@
 package com.example.schedulemai.presentation
 
-import android.content.Context
-import android.net.Network
 import com.example.schedulemai.models.Course
-import com.github.pwittchen.reactivenetwork.library.rx2.ReactiveNetwork
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -75,12 +72,8 @@ class GroupListPresenter(private val view: GroupListContract.View) :
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
-                {
-                    view.onSuccess(it)
-                },
-                {
-                    view.onError(it)
-                }
+                { view.onSuccess(it) },
+                { view.onError(it) }
             )
         )
     }

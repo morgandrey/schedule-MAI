@@ -19,7 +19,9 @@ import com.example.schedulemai.models.Lesson
 import com.example.schedulemai.presentation.LessonListAdapter
 import com.example.schedulemai.presentation.LessonListContract
 import com.example.schedulemai.presentation.LessonListPresenter
+import com.example.schedulemai.utils.NetworkMonitorUtil
 import com.example.schedulemai.utils.SharedPreferencesServiceImpl
+import com.example.schedulemai.utils.Utils.showNetworkConnectionLostSnackBar
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -31,6 +33,12 @@ class LessonListFragment : Fragment(R.layout.fragment_lesson_list), LessonListCo
     private lateinit var lessonListPresenter: LessonListPresenter
     private lateinit var group: String
     private lateinit var sharedPreferencesServiceImpl: SharedPreferencesServiceImpl
+    private lateinit var networkMonitor: NetworkMonitorUtil
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        networkMonitor = NetworkMonitorUtil(requireContext())
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -73,8 +81,14 @@ class LessonListFragment : Fragment(R.layout.fragment_lesson_list), LessonListCo
                     startActivity(intent)
                 }
             })
-
-        lessonListPresenter.getGroupLessons(group, null)
+        networkMonitor.result = { isAvailable, _ ->
+            requireActivity().runOnUiThread {
+                when (isAvailable) {
+                    true -> { lessonListPresenter.getGroupLessons(group, null) }
+                    false -> { showNetworkConnectionLostSnackBar(requireView()) }
+                }
+            }
+        }
     }
 
     override fun onError(e: Throwable) {
@@ -114,6 +128,17 @@ class LessonListFragment : Fragment(R.layout.fragment_lesson_list), LessonListCo
             lessonRecyclerView.layoutManager = LinearLayoutManager(activity)
             lessonRecyclerView.adapter = LessonListAdapter(list)
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        networkMonitor.register()
+
+    }
+
+    override fun onStop() {
+        super.onStop()
+        networkMonitor.unregister()
     }
 
     override fun onDestroy() {
