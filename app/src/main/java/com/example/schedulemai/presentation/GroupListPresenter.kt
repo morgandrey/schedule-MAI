@@ -1,79 +1,31 @@
 package com.example.schedulemai.presentation
 
-import com.example.schedulemai.models.Course
-import io.reactivex.Observable
+import com.example.schedulemai.remote.HtmlParser
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
-import org.jsoup.Jsoup
-import java.io.IOException
+import moxy.MvpPresenter
 
 
 /**
  * Created by Andrey Morgunov on 04/03/2021.
  */
 
-class GroupListPresenter(private val view: GroupListContract.View) :
-    GroupListContract.Presenter {
+class GroupListPresenter : MvpPresenter<GroupListView>() {
 
     private val compositeDisposable = CompositeDisposable()
 
-    private fun getObservableGroups(): Observable<List<Course>> {
-        return Observable.create {
-            try {
-                val totalList = mutableListOf<Course>()
-                val doc = Jsoup.connect("http://mai.ru/education/schedule/").get()
-                val courses = doc.select("div.sc-container").select("h5")
-                for (course in courses) {
-                    val cour = course.text()
-                        .removeSuffix(" курс")
-                        .toInt()
-                    val institutes = doc.select("div.sc-table.sc-table-groups")
-                        .select("div.sc-table-row")
-                        .select("a.sc-table-col")
-                    for (institute in institutes) {
-                        val inst = institute.attr("href")
-                            .substringAfter("Институт-№")
-                            .toInt()
-                        if (institute.attr("href") == "#fac-$cour-Институт-№$inst") {
-                            val groupsDoc = doc.select("div.sc-container")
-                                .select("div.sc-table.sc-table-groups")
-                                .select("div.sc-table-row")
-                                .select("div.sc-table-col-body")
-                            for (group in groupsDoc) {
-                                val attr = group.attr("id")
-                                if (attr == "fac-$cour-Институт-№$inst") {
-                                    group.select("div.sc-groups").select("a.sc-group-item")
-                                        .forEach { elem ->
-                                            totalList.add(
-                                                Course(
-                                                    course = cour,
-                                                    institute = inst,
-                                                    group = elem.text()
-                                                )
-                                            )
-                                        }
-                                }
-                            }
-                        }
-                    }
-                }
-                it.onNext(totalList)
-            } catch (io: IOException) {
-                it.onError(io)
-            } finally {
-                it.onComplete()
-            }
-        }
-    }
-
-    override fun getGroups() {
-        compositeDisposable.add(getObservableGroups()
+    fun getGroups() {
+        viewState.switchProgressBar()
+        compositeDisposable.add(HtmlParser.parseGroups()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
-                { view.onSuccess(it) },
-                { view.onError(it) }
+                { groups ->
+                    viewState.switchProgressBar(false)
+                    viewState.onSuccess(groups)
+                },
+                { error -> viewState.showError(error) }
             )
         )
     }

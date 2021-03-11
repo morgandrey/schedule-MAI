@@ -32,7 +32,8 @@
             android:id="@+id/lesson_names_text_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingStart="8dp"
+            android:paddingStart="4dp"
+            android:paddingEnd="4dp"
             android:textColor="@color/black"
             android:textSize="14sp"
             tools:text="16:00 - 17: 30 ЛК Программирование на высоких языках" />

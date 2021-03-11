@@ -55,9 +55,8 @@
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
             android:layout_weight="1"
-            android:gravity="right"
+            android:gravity="end"
             android:text="@string/change_group_text"
-            android:textAlignment="viewEnd"
             android:textColor="@color/colorAccentDark"
             android:textSize="18sp" />
     </LinearLayout>
@@ -72,8 +71,9 @@
         android:id="@+id/lesson_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="visible"
-        tools:listitem="@layout/lesson_item_view" />
+        tools:listitem="@layout/lesson_item_view">
+
+    </androidx.recyclerview.widget.RecyclerView>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -91,4 +91,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 </LinearLayout>
+
+

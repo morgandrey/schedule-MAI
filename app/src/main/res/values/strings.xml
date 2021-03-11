@@ -35,5 +35,6 @@
     <string name="group">Group</string>
     <string name="find_groups_button_text">Find</string>
     <string name="change_group_text">Change group</string>
+    <string name="communication_error">Error in getting data</string>
     <string name="network_connection_lost">Network connection lost</string>
 </resources>

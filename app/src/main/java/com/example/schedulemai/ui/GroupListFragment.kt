@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import androidx.activity.OnBackPressedCallback
-import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import by.kirich1409.viewbindingdelegate.viewBinding
@@ -15,18 +14,22 @@ import com.example.schedulemai.R
 import com.example.schedulemai.databinding.FragmentGroupListBinding
 import com.example.schedulemai.models.Course
 import com.example.schedulemai.presentation.GroupListAdapter
-import com.example.schedulemai.presentation.GroupListContract
+import com.example.schedulemai.presentation.GroupListView
 import com.example.schedulemai.presentation.GroupListPresenter
 import com.example.schedulemai.utils.NetworkMonitorUtil
 import com.example.schedulemai.utils.SharedPreferencesServiceImpl
-import com.example.schedulemai.utils.Utils.showNetworkConnectionLostSnackBar
+import com.example.schedulemai.utils.NetworkUtils.showNetworkConnectionLostSnackBar
 import com.google.android.material.snackbar.Snackbar
+import moxy.MvpAppCompatFragment
+import moxy.ktx.moxyPresenter
+import timber.log.Timber
 
 
-class GroupListFragment : Fragment(R.layout.fragment_group_list), GroupListContract.View {
+class GroupListFragment : MvpAppCompatFragment(R.layout.fragment_group_list), GroupListView {
 
+    private val presenter: GroupListPresenter by moxyPresenter { GroupListPresenter() }
     private val binding: FragmentGroupListBinding by viewBinding()
-    private lateinit var groupListPresenter: GroupListPresenter
+
     private var courseList: List<Course> = listOf()
     private lateinit var sharedPreferencesServiceImpl: SharedPreferencesServiceImpl
     private lateinit var networkMonitor: NetworkMonitorUtil
@@ -50,7 +53,6 @@ class GroupListFragment : Fragment(R.layout.fragment_group_list), GroupListContr
         if (sharedPreferencesServiceImpl.getGroup() != null) {
             view.findNavController().navigate(R.id.action_groupListFragment_to_lessonListFragment)
         } else {
-            groupListPresenter = GroupListPresenter(this)
             ArrayAdapter.createFromResource(
                 requireContext(),
                 R.array.courses,
@@ -68,9 +70,6 @@ class GroupListFragment : Fragment(R.layout.fragment_group_list), GroupListContr
                 binding.instituteSpinner.adapter = adapter
             }
             with(binding) {
-                groupListRecyclerView.layoutManager = LinearLayoutManager(activity)
-                groupListRecyclerView.visibility = View.GONE
-                groupListProgressBar.visibility = View.VISIBLE
                 findGroupsButton.setOnClickListener {
                     filterGroupsByParameters(
                         courseSpinner.selectedItemPosition,
@@ -80,9 +79,7 @@ class GroupListFragment : Fragment(R.layout.fragment_group_list), GroupListContr
             }
             activity?.onBackPressedDispatcher?.addCallback(
                 viewLifecycleOwner,
-                object : OnBackPressedCallback(
-                    true
-                ) {
+                object : OnBackPressedCallback(true) {
                     override fun handleOnBackPressed() {
                         val intent = Intent(Intent.ACTION_MAIN)
                         intent.addCategory(Intent.CATEGORY_HOME)
@@ -93,8 +90,12 @@ class GroupListFragment : Fragment(R.layout.fragment_group_list), GroupListContr
             networkMonitor.result = { isAvailable, _ ->
                 requireActivity().runOnUiThread {
                     when (isAvailable) {
-                        true -> { groupListPresenter.getGroups() }
-                        false -> { showNetworkConnectionLostSnackBar(requireView()) }
+                        true -> {
+                            presenter.getGroups()
+                        }
+                        false -> {
+                            showNetworkConnectionLostSnackBar(requireView())
+                        }
                     }
                 }
             }
@@ -116,23 +117,36 @@ class GroupListFragment : Fragment(R.layout.fragment_group_list), GroupListContr
         }, sharedPreferencesServiceImpl)
     }
 
-    override fun onError(e: Throwable) {
+    override fun switchProgressBar(show: Boolean) {
+        when (show) {
+            true -> {
+                binding.groupListProgressBar.visibility = View.VISIBLE
+                binding.groupListRecyclerView.visibility = View.GONE
+            }
+            false -> {
+                binding.groupListProgressBar.visibility = View.GONE
+                binding.groupListRecyclerView.visibility = View.VISIBLE
+            }
+        }
+    }
+
+    override fun showError(exception: Throwable) {
+        Timber.e(exception)
         Snackbar.make(
             requireView(),
-            e.message.toString(),
+            getString(R.string.communication_error),
             Snackbar.LENGTH_LONG
         ).show()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        groupListPresenter.onDestroy()
+        presenter.onDestroy()
     }
 
     override fun onResume() {
         super.onResume()
         networkMonitor.register()
-
     }
 
     override fun onStop() {
@@ -141,9 +155,8 @@ class GroupListFragment : Fragment(R.layout.fragment_group_list), GroupListContr
     }
 
     override fun onSuccess(list: List<Course>) {
-        binding.groupListRecyclerView.visibility = View.VISIBLE
-        binding.groupListProgressBar.visibility = View.GONE
         courseList = list
+        binding.groupListRecyclerView.layoutManager = LinearLayoutManager(activity)
         binding.groupListRecyclerView.adapter = GroupListAdapter(list, sharedPreferencesServiceImpl)
     }
 }

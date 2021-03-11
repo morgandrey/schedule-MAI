@@ -12,7 +12,7 @@ import com.google.android.material.snackbar.Snackbar
  */
 
 
-object Utils {
+object NetworkUtils {
     fun showNetworkConnectionLostSnackBar(view: View) {
         val snack = Snackbar.make(
             view,
